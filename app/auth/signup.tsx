@@ -3,6 +3,7 @@ import { ThemedText } from "@/components/general/ThemedText";
 import { ThemedTextInput } from "@/components/general/ThemedTextInput";
 import { ThemedView } from "@/components/general/ThemedView";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
+import { UserContext } from "@/context/UserContext";
 import { useThemeColour } from "@/hooks/useThemeColour";
 import { registerUser } from "@/services/auth-service";
 import {
@@ -12,11 +13,14 @@ import {
 	Octicons,
 } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function SignUp() {
 	const colors = useThemeColour();
+
+	const { updateUserProfile } = useContext(UserContext);
+
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -75,6 +79,14 @@ export default function SignUp() {
 			};
 
 			const result = await registerUser(data);
+			const { first_name, surname, phone_number, user_id } = result.user;
+			router.replace("/home");
+			updateUserProfile({
+				firstName: first_name,
+				surname,
+				phoneNumber: phone_number,
+				userId: user_id,
+			});
 			router.replace("/home");
 			console.log(result);
 		} catch (error: any) {
