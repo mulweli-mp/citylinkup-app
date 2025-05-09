@@ -6,6 +6,7 @@ import { DEVICE_HEIGHT } from "@/constants/Dimensions";
 import { UserContext } from "@/context/UserContext";
 import { useThemeColour } from "@/hooks/useThemeColour";
 import { loginUser } from "@/services/auth-service";
+import { setStoredUser, StoredUserType } from "@/utilities/auth";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
@@ -18,6 +19,7 @@ export default function Login() {
 
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const onLogin = async () => {
 		// Trim to avoid whitespace issues
@@ -48,6 +50,7 @@ export default function Login() {
 
 		// If all validations pass, proceed to register
 		try {
+			setIsLoading(true);
 			const data = {
 				phone_number: trimmedPhone,
 				password: trimmedPassword,
@@ -55,16 +58,26 @@ export default function Login() {
 
 			const result = await loginUser(data);
 			const { first_name, surname, phone_number, user_id } = result.user;
-			router.replace("/home");
-			updateUserProfile({
+			const userData = {
 				firstName: first_name,
 				surname,
 				phoneNumber: phone_number,
 				userId: user_id,
-			});
+			};
+			const userDataToStore: StoredUserType = {
+				...userData,
+				authToken: result.token,
+			};
+			updateUserProfile(userData);
+			await setStoredUser(userDataToStore);
+			router.replace("/home");
+
 			console.log(result);
 		} catch (error: any) {
 			Alert.alert("Error", error.response?.data?.error || "Login failed");
+			console.log(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 	const onForgotPassword = () => {
@@ -112,7 +125,11 @@ export default function Login() {
 					</View>
 				</View>
 				<View style={styles.buttonsSection}>
-					<PrimaryButton title="Login" onPress={onLogin} />
+					<PrimaryButton
+						title="Login"
+						onPress={onLogin}
+						isLoading={isLoading}
+					/>
 					<View style={styles.newUserSection}>
 						<ThemedText type="link" onPress={onCreateAccount}>
 							New User? Create Account

@@ -1,13 +1,16 @@
 import { ThemedText } from "@/components/general/ThemedText";
 import { ThemedView } from "@/components/general/ThemedView";
-import { UserContext } from "@/context/UserContext";
+import { initialData, UserContext } from "@/context/UserContext";
+import { setStoredUser } from "@/utilities/auth";
 import { router } from "expo-router";
 import { useContext } from "react";
 import { Button, Image } from "react-native";
 
 export default function Home() {
-	const { userProfile } = useContext(UserContext);
+	const { userProfile, updateUserProfile } = useContext(UserContext);
 	const onLogOut = () => {
+		updateUserProfile(initialData);
+		setStoredUser(null);
 		router.replace("/auth/login");
 	};
 

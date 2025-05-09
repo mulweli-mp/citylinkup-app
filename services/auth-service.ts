@@ -36,3 +36,22 @@ export const loginUser = async (userData: LoginType) => {
 		throw error;
 	}
 };
+
+export const validateToken = async (token: string) => {
+	const API_URL = `${AUTH_URL}/validate`;
+
+	try {
+		const response = await axios.get(API_URL, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data; // { valid: true, user: { userId: ... } }
+	} catch (error: any) {
+		console.log(
+			"Token validation failed:",
+			error.response?.data || error.message
+		);
+		throw error;
+	}
+};

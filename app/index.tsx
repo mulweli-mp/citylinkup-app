@@ -1,24 +1,43 @@
 import { ThemedView } from "@/components/general/ThemedView";
+import { UserContext } from "@/context/UserContext";
 import { useThemeColour } from "@/hooks/useThemeColour";
+import { validateToken } from "@/services/auth-service";
+import { getStoredUser } from "@/utilities/auth";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { ActivityIndicator, Image } from "react-native";
 
 export default function Index() {
 	const colors = useThemeColour();
+	const { updateUserProfile } = useContext(UserContext);
+
+	const onMount = async () => {
+		try {
+			const storedUserData = await getStoredUser();
+			if (storedUserData) {
+				const { firstName, surname, phoneNumber, userId, authToken } =
+					storedUserData;
+				const tokenResult = await validateToken(authToken);
+				if (tokenResult.valid) {
+					updateUserProfile({ firstName, surname, phoneNumber, userId });
+					router.replace("/home");
+				} else {
+					router.replace("/auth/login");
+				}
+			} else {
+				router.replace("/auth/login");
+			}
+		} catch (error) {
+			alert("Failed to fetch stored data");
+			throw error;
+		}
+	};
 
 	useEffect(() => {
-		//To do:
-		//Add a function to check if the user is logged out or not
+		//This process takes miliseconds but a 1 second delay is implimented to enhance user experience
 		setTimeout(() => {
-			const isSignedIn = false;
-
-			if (isSignedIn) {
-				router.replace("./home");
-			} else {
-				router.replace("./auth/login");
-			}
-		}, 2000);
+			onMount();
+		}, 1000);
 	}, []);
 	return (
 		<ThemedView

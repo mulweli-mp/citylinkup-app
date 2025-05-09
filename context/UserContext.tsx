@@ -12,7 +12,7 @@ type UserContextType = {
 	updateUserProfile: (newData: Partial<UserProfileType>) => void;
 };
 
-const initialData = {
+export const initialData = {
 	firstName: "",
 	surname: "",
 	phoneNumber: "",

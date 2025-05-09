@@ -6,6 +6,7 @@ import { DEVICE_HEIGHT } from "@/constants/Dimensions";
 import { UserContext } from "@/context/UserContext";
 import { useThemeColour } from "@/hooks/useThemeColour";
 import { registerUser } from "@/services/auth-service";
+import { setStoredUser, StoredUserType } from "@/utilities/auth";
 import {
 	Entypo,
 	FontAwesome,
@@ -26,6 +27,7 @@ export default function SignUp() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [firstName, setFirstName] = useState("");
 	const [surname, setSurname] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const onCreateAccount = async () => {
 		// Trim to avoid whitespace issues
@@ -80,20 +82,28 @@ export default function SignUp() {
 
 			const result = await registerUser(data);
 			const { first_name, surname, phone_number, user_id } = result.user;
-			router.replace("/home");
-			updateUserProfile({
+			const userData = {
 				firstName: first_name,
 				surname,
 				phoneNumber: phone_number,
 				userId: user_id,
-			});
+			};
+			const userDataToStore: StoredUserType = {
+				...userData,
+				authToken: result.token,
+			};
+			updateUserProfile(userData);
+			setStoredUser(userDataToStore);
 			router.replace("/home");
+
 			console.log(result);
 		} catch (error: any) {
 			Alert.alert(
 				"Error",
 				error.response?.data?.error || "Registration failed"
 			);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -165,7 +175,11 @@ export default function SignUp() {
 					/>
 				</View>
 				<View style={styles.buttonsSection}>
-					<PrimaryButton title="Create Account" onPress={onCreateAccount} />
+					<PrimaryButton
+						title="Create Account"
+						onPress={onCreateAccount}
+						isLoading={isLoading}
+					/>
 					<View style={styles.newUserSection}>
 						<ThemedText type="link" onPress={onBack}>
 							Already have an account? Login
