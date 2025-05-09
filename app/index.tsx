@@ -1,9 +1,27 @@
+import { ThemedView } from "@/components/general/ThemedView";
+import { useThemeColour } from "@/hooks/useThemeColour";
 import { router } from "expo-router";
-import { Button, Image, View } from "react-native";
+import { useEffect } from "react";
+import { ActivityIndicator, Image } from "react-native";
 
 export default function Index() {
+	const colors = useThemeColour();
+
+	useEffect(() => {
+		//To do:
+		//Add a function to check if the user is logged out or not
+		setTimeout(() => {
+			const isSignedIn = false;
+
+			if (isSignedIn) {
+				router.replace("./home");
+			} else {
+				router.replace("./auth/login");
+			}
+		}, 2000);
+	}, []);
 	return (
-		<View
+		<ThemedView
 			style={{
 				flex: 1,
 				justifyContent: "center",
@@ -17,14 +35,7 @@ export default function Index() {
 					width: 200,
 				}}
 			/>
-			<Button
-				title="Go To Login"
-				onPress={() => router.navigate("./auth/login")}
-			/>
-			<Button
-				title="Go To SignUp"
-				onPress={() => router.navigate("./auth/signup")}
-			/>
-		</View>
+			<ActivityIndicator size={"large"} color={colors.primary} />
+		</ThemedView>
 	);
 }
