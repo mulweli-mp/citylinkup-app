@@ -4,6 +4,7 @@ import { ThemedTextInput } from "@/components/general/ThemedTextInput";
 import { ThemedView } from "@/components/general/ThemedView";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
 import { useThemeColour } from "@/hooks/useThemeColour";
+import { registerUser } from "@/services/auth-service";
 import {
 	Entypo,
 	FontAwesome,
@@ -12,7 +13,7 @@ import {
 } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function SignUp() {
 	const colors = useThemeColour();
@@ -22,8 +23,66 @@ export default function SignUp() {
 	const [firstName, setFirstName] = useState("");
 	const [surname, setSurname] = useState("");
 
-	const onCreateAccount = () => {
-		alert("create account function coming soon");
+	const onCreateAccount = async () => {
+		// Trim to avoid whitespace issues
+		const trimmedFirstName = firstName.trim();
+		const trimmedSurname = surname.trim();
+		const trimmedPhone = phoneNumber.trim();
+		const trimmedPassword = newPassword;
+		const trimmedConfirmPassword = confirmPassword;
+
+		// Basic field validations
+		if (
+			!trimmedFirstName ||
+			!trimmedSurname ||
+			!trimmedPhone ||
+			!trimmedPassword ||
+			!trimmedConfirmPassword
+		) {
+			Alert.alert("Validation Error", "All fields are required.");
+			return;
+		}
+
+		// Phone number validation (basic, 10-13 digits)
+		const phoneRegex = /^[0-9]{10,13}$/;
+		if (!phoneRegex.test(trimmedPhone)) {
+			Alert.alert("Validation Error", "Enter a valid phone number.");
+			return;
+		}
+
+		// Password match
+		if (trimmedPassword !== trimmedConfirmPassword) {
+			Alert.alert("Validation Error", "Passwords do not match.");
+			return;
+		}
+
+		// Password length
+		if (trimmedPassword.length < 6) {
+			Alert.alert(
+				"Validation Error",
+				"Password must be at least 6 characters long."
+			);
+			return;
+		}
+
+		// If all validations pass, proceed to register
+		try {
+			const data = {
+				first_name: trimmedFirstName,
+				surname: trimmedSurname,
+				phone_number: trimmedPhone,
+				password: trimmedPassword,
+			};
+
+			const result = await registerUser(data);
+			router.replace("/home");
+			console.log(result);
+		} catch (error: any) {
+			Alert.alert(
+				"Error",
+				error.response?.data?.error || "Registration failed"
+			);
+		}
 	};
 
 	const onBack = () => {

@@ -4,18 +4,57 @@ import { ThemedTextInput } from "@/components/general/ThemedTextInput";
 import { ThemedView } from "@/components/general/ThemedView";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
 import { useThemeColour } from "@/hooks/useThemeColour";
+import { loginUser } from "@/services/auth-service";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function Login() {
 	const colors = useThemeColour();
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [password, setPassword] = useState("");
 
-	const onLogin = () => {
-		router.navigate("/home");
+	const onLogin = async () => {
+		// Trim to avoid whitespace issues
+		const trimmedPhone = phoneNumber.trim();
+		const trimmedPassword = password;
+
+		// Basic field validations
+		if (!trimmedPhone || !trimmedPassword) {
+			Alert.alert("Validation Error", "All fields are required.");
+			return;
+		}
+
+		// Phone number validation (basic, 10-13 digits)
+		const phoneRegex = /^[0-9]{10,13}$/;
+		if (!phoneRegex.test(trimmedPhone)) {
+			Alert.alert("Validation Error", "Enter a valid phone number.");
+			return;
+		}
+
+		// Password length
+		if (trimmedPassword.length < 6) {
+			Alert.alert(
+				"Validation Error",
+				"Password must be at least 6 characters long."
+			);
+			return;
+		}
+
+		// If all validations pass, proceed to register
+		try {
+			const data = {
+				phone_number: trimmedPhone,
+				password: trimmedPassword,
+			};
+
+			const result = await loginUser(data);
+			router.replace("/home");
+			console.log(result);
+		} catch (error: any) {
+			Alert.alert("Error", error.response?.data?.error || "Login failed");
+		}
 	};
 	const onForgotPassword = () => {
 		router.navigate("/auth/forgot-password");
