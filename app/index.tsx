@@ -1,6 +1,6 @@
 import { ThemedView } from "@/components/general/ThemedView";
 import { UserContext } from "@/context/UserContext";
-import { useThemeColour } from "@/hooks/useThemeColour";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { validateToken } from "@/services/auth-service";
 import { getStoredUser } from "@/utilities/auth";
 import { router } from "expo-router";
@@ -8,7 +8,7 @@ import { useContext, useEffect } from "react";
 import { ActivityIndicator, Image } from "react-native";
 
 export default function Index() {
-	const colors = useThemeColour();
+	const colors = useThemeColor();
 	const { updateUserProfile } = useContext(UserContext);
 
 	const onMount = async () => {

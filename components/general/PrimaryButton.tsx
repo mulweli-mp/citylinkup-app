@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "@/constants/Dimensions";
-import { useThemeColour } from "@/hooks/useThemeColour";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type propsType = {
 	onPress: () => void;
@@ -21,7 +21,7 @@ type propsType = {
 export default function PrimaryButton(props: propsType) {
 	const { onPress, title, isLoading, style } = props;
 
-	const colors = useThemeColour();
+	const colors = useThemeColor();
 
 	return (
 		<TouchableOpacity

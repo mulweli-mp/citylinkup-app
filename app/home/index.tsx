@@ -1,42 +1,46 @@
-import { ThemedText } from "@/components/general/ThemedText";
-import { ThemedView } from "@/components/general/ThemedView";
-import { initialData, UserContext } from "@/context/UserContext";
-import { setStoredUser } from "@/utilities/auth";
-import { router } from "expo-router";
-import { useContext } from "react";
-import { Button, Image } from "react-native";
+import { BottomTabBar, Header, ThemedView } from "@/components/general";
+import { useContext, useEffect } from "react";
 
-export default function Home() {
-	const { userProfile, updateUserProfile } = useContext(UserContext);
-	const onLogOut = () => {
-		updateUserProfile(initialData);
-		setStoredUser(null);
-		router.replace("/auth/login");
+import { Account, Home, Rides } from "@/components/home";
+import { ActiveTabType, HomeTabsContext } from "@/context/HomeTabsContext";
+import { useLocalSearchParams } from "expo-router";
+
+export default function () {
+	const { selectedTab } = useLocalSearchParams<{
+		selectedTab: ActiveTabType;
+	}>();
+	const { activeTab, updateActiveTab } = useContext(HomeTabsContext);
+
+	const switchTab = (tabName: ActiveTabType) => {
+		updateActiveTab(tabName);
 	};
+
+	useEffect(() => {
+		if (selectedTab) {
+			updateActiveTab(selectedTab);
+		}
+	}, []);
+
+	const subTitleMap: Record<ActiveTabType, string> = {
+		Rides: "Rides",
+		Account: "Account",
+		Home: "Home",
+	};
+
+	const subTitle = subTitleMap[activeTab as ActiveTabType] || null;
 
 	return (
 		<ThemedView
 			style={{
 				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
 			}}
 		>
-			<Image
-				source={require("@/assets/images/countryside.jpg")}
-				style={{
-					height: 200,
-					width: 200,
-					borderRadius: 200 / 2,
-					marginBottom: 20,
-				}}
-				resizeMode="cover"
-			/>
-			<ThemedText type="title">
-				Hello {userProfile.firstName} {userProfile.surname}
-			</ThemedText>
-			<ThemedText type="subtitle"> {userProfile.phoneNumber}</ThemedText>
-			<Button title="Log Out" onPress={onLogOut} />
+			{subTitle !== "Home" && <Header title="AppLogo" type="homeHeader" />}
+			{activeTab === "Home" && <Home />}
+			{activeTab === "Rides" && <Rides />}
+			{activeTab === "Account" && <Account />}
+
+			<BottomTabBar activeTab={activeTab} switchTab={switchTab} />
 		</ThemedView>
 	);
 }

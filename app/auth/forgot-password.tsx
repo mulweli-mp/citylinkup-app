@@ -3,14 +3,14 @@ import { ThemedText } from "@/components/general/ThemedText";
 import { ThemedTextInput } from "@/components/general/ThemedTextInput";
 import { ThemedView } from "@/components/general/ThemedView";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
-import { useThemeColour } from "@/hooks/useThemeColour";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function Login() {
-	const colors = useThemeColour();
+	const colors = useThemeColor();
 	const [phoneNumber, setPhoneNumber] = useState("");
 
 	const onResetPassword = () => {

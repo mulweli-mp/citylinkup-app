@@ -4,7 +4,7 @@ import { ThemedTextInput } from "@/components/general/ThemedTextInput";
 import { ThemedView } from "@/components/general/ThemedView";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
 import { UserContext } from "@/context/UserContext";
-import { useThemeColour } from "@/hooks/useThemeColour";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { loginUser } from "@/services/auth-service";
 import { setStoredUser, StoredUserType } from "@/utilities/auth";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
@@ -13,7 +13,7 @@ import { useContext, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function Login() {
-	const colors = useThemeColour();
+	const colors = useThemeColor();
 
 	const { updateUserProfile } = useContext(UserContext);
 
@@ -71,8 +71,6 @@ export default function Login() {
 			updateUserProfile(userData);
 			await setStoredUser(userDataToStore);
 			router.replace("/home");
-
-			console.log(result);
 		} catch (error: any) {
 			Alert.alert("Error", error.response?.data?.error || "Login failed");
 			console.log(error);

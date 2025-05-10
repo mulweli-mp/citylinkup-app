@@ -20,7 +20,7 @@ export const registerUser = async (userData: RegistrationType) => {
 		const response = await axios.post(API_URL, userData);
 		return response.data;
 	} catch (error: any) {
-		console.log("Registration failed:", error.response?.data || error.message);
+		// console.log("Registration failed:", error.response?.data || error.message);
 		throw error;
 	}
 };
@@ -32,7 +32,7 @@ export const loginUser = async (userData: LoginType) => {
 		const response = await axios.post(API_URL, userData);
 		return response.data;
 	} catch (error: any) {
-		console.log("Login failed:", error.response?.data || error.message);
+		// console.log("Login failed:", error.response?.data || error.message);
 		throw error;
 	}
 };
@@ -48,10 +48,6 @@ export const validateToken = async (token: string) => {
 		});
 		return response.data; // { valid: true, user: { userId: ... } }
 	} catch (error: any) {
-		console.log(
-			"Token validation failed:",
-			error.response?.data || error.message
-		);
 		throw error;
 	}
 };

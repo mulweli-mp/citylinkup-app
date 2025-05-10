@@ -4,7 +4,7 @@ import { ThemedTextInput } from "@/components/general/ThemedTextInput";
 import { ThemedView } from "@/components/general/ThemedView";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
 import { UserContext } from "@/context/UserContext";
-import { useThemeColour } from "@/hooks/useThemeColour";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { registerUser } from "@/services/auth-service";
 import { setStoredUser, StoredUserType } from "@/utilities/auth";
 import {
@@ -18,7 +18,7 @@ import { useContext, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, View } from "react-native";
 
 export default function SignUp() {
-	const colors = useThemeColour();
+	const colors = useThemeColor();
 
 	const { updateUserProfile } = useContext(UserContext);
 

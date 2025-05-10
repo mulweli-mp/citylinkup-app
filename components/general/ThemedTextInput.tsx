@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/general/ThemedText";
 import { DEVICE_HEIGHT } from "@/constants/Dimensions";
-import { useThemeColour } from "@/hooks/useThemeColour";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { Entypo } from "@expo/vector-icons";
 import React, { JSX, useState } from "react";
 import {
@@ -28,7 +28,7 @@ export function ThemedTextInput({
 	inputMode,
 	passwordInput,
 }: Props) {
-	const colors = useThemeColour();
+	const colors = useThemeColor();
 
 	const [hidePassword, setHidePassword] = useState(true);
 	const toogleHodePassword = () => {
