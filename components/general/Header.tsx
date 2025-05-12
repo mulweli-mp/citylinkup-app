@@ -20,6 +20,8 @@ type props = {
 export default function Header(props: props) {
 	const { title, type, subTitle, closeButton } = props;
 	const colors = useThemeColor();
+	const backgroundColor =
+		colors.themeName === "dark" ? colors.background : colors.primary;
 
 	const router = useRouter();
 	const navigation = useNavigation();
@@ -44,7 +46,7 @@ export default function Header(props: props) {
 				style={[
 					styles.container,
 					{
-						backgroundColor: colors.primary,
+						backgroundColor,
 					},
 				]}
 			>

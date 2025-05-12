@@ -11,7 +11,8 @@ export const Colors = {
 	},
 	dark: {
 		foreground: "#CCCCCC",
-		background: "#181818",
+		// background: "#1c1c1e",
+		background: "#121212",
 		secondaryBackground: "#2a2e30",
 		tetiaryBackground: "#0d0d0d",
 		tint: "#fff",

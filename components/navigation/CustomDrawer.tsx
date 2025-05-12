@@ -1,10 +1,15 @@
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+	AntDesign,
+	Entypo,
+	FontAwesome5,
+	MaterialCommunityIcons,
+	MaterialIcons,
+} from "@expo/vector-icons";
 import { router } from "expo-router";
 import {
 	Image,
 	ScrollView,
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 	View,
 } from "react-native";
@@ -39,25 +44,33 @@ export default function CustomDrawer() {
 			optionName: "Home",
 			key: "home",
 			navigationScreen: "/home",
-			icon: <Ionicons name={"home"} size={24} color={colors.primary} />,
+			icon: (
+				<MaterialCommunityIcons
+					name="home-heart"
+					size={32}
+					color={colors.primary}
+				/>
+			),
 			params: { selectedTab: "Home" },
 		},
 
 		{
-			optionName: "Refer a Friend",
-			key: "refer-a-friend",
-			icon: <Ionicons name="share" size={24} color={colors.primary} />,
+			optionName: "My Rides",
+			key: "rides",
+			icon: <FontAwesome5 name="car" size={24} color={colors.primary} />,
 		},
 		{
-			optionName: "Contact Us",
-			key: "contact-us",
-			icon: <MaterialIcons name="call" size={24} color={colors.primary} />,
+			optionName: "Support",
+			key: "support",
+			icon: (
+				<MaterialIcons name="wifi-calling-3" size={24} color={colors.primary} />
+			),
 		},
 		{
-			optionName: "Help",
+			optionName: "Safety",
 			key: "help",
 			navigationScreen: "/home/on-boarding",
-			icon: <AntDesign name="infocirlce" size={24} color={colors.primary} />,
+			icon: <AntDesign name="Safety" size={24} color={colors.primary} />,
 		},
 
 		{
@@ -81,7 +94,7 @@ export default function CustomDrawer() {
 			<CustomStatusBar />
 			<View style={styles.profileContainer}>
 				<Image
-					source={require("@/assets/images/countryside.jpg")}
+					source={require("@/assets/images/default-profile.jpg")}
 					style={styles.profileImage}
 				/>
 				<View style={styles.profileDetails}>
@@ -114,7 +127,13 @@ export default function CustomDrawer() {
 								}
 							}}
 							key={key + index}
-							style={styles.menuButton}
+							style={[
+								styles.menuButton,
+								{
+									backgroundColor:
+										colors.themeName == "light" ? "white" : colors.background,
+								},
+							]}
 						>
 							{icon}
 							<ThemedText style={styles.menuTitleText}>{optionName}</ThemedText>
@@ -128,7 +147,7 @@ export default function CustomDrawer() {
 				)}
 			</ScrollView>
 			<View style={styles.appVersionContainer}>
-				<Text style={styles.versionText}>{appVersion}</Text>
+				<ThemedText style={styles.versionText}>{appVersion}</ThemedText>
 			</View>
 		</ThemedView>
 	);
@@ -153,7 +172,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingHorizontal: 15,
 		borderRadius: 5,
-		backgroundColor: "white",
+		// backgroundColor: "white",
 		elevation: 1,
 		alignSelf: "center",
 	},

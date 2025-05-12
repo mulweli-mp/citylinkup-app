@@ -4,8 +4,6 @@ import { ActiveTabType } from "@/context/HomeTabsContext";
 import useFontScale from "@/hooks/useFontScale";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { useRouter } from "expo-router";
 import {
 	StatusBar,
 	StyleSheet,
@@ -14,105 +12,75 @@ import {
 	View,
 } from "react-native";
 
-type props = {
+type Props = {
 	activeTab: string;
 	switchTab: (tabName: ActiveTabType) => void;
 };
 
-export default function BottomTabBar(props: props) {
-	const fontSizeCategory = useFontScale();
+const tabItems = [
+	{
+		key: "Home",
+		label: "Home",
+		icon: (color: string) => (
+			<FontAwesome name="home" size={24} color={color} />
+		),
+	},
+	{
+		key: "Rides",
+		label: "Rides",
+		icon: (color: string) => (
+			<Feather name="trending-up" size={24} color={color} />
+		),
+	},
+	{
+		key: "Account",
+		label: "Account",
+		icon: (color: string) => <Ionicons name="people" size={24} color={color} />,
+	},
+];
 
-	const { activeTab, switchTab } = props;
+export default function BottomTabBar({ activeTab, switchTab }: Props) {
+	const fontSizeCategory = useFontScale();
 	const colors = useThemeColor();
 
-	const router = useRouter();
-	const navigation = useNavigation();
+	const backgroundColor =
+		colors.themeName === "dark" ? "#1c1c1e" : colors.primary;
+	const activeIconContainerBgColour =
+		colors.themeName === "dark" ? "rgba(27, 23, 23, 0.8)" : "white";
 
-	const toggleDrawer = () => {
-		navigation.dispatch(DrawerActions.toggleDrawer());
+	const renderTab = (
+		key: ActiveTabType,
+		label: string,
+		icon: (color: string) => React.ReactNode
+	) => {
+		const isActive = activeTab === key;
+		const containerColor = isActive ? activeIconContainerBgColour : undefined;
+		const iconColor = isActive ? colors.primary : "white";
+
+		return (
+			<TouchableOpacity
+				key={key}
+				onPress={() => switchTab(key)}
+				style={styles.drawerIcon}
+			>
+				<View
+					style={[styles.iconContainer, { backgroundColor: containerColor }]}
+				>
+					{icon(iconColor)}
+				</View>
+				{fontSizeCategory !== "larger" && (
+					<Text style={styles.tabNameText}>{label}</Text>
+				)}
+			</TouchableOpacity>
+		);
 	};
 
 	return (
-		<ThemedView
-			style={[
-				styles.container,
-				{
-					backgroundColor: colors.primary,
-				},
-			]}
-		>
+		<ThemedView style={[styles.container, { backgroundColor }]}>
 			<StatusBar backgroundColor={colors.primary} />
-			<TouchableOpacity
-				onPress={() => switchTab("Home")}
-				style={styles.drawerIcon}
-			>
-				<View
-					style={[
-						styles.iconContainer,
-						{
-							backgroundColor:
-								activeTab === "Home" ? colors.background : colors.primary,
-						},
-					]}
-				>
-					<FontAwesome
-						name="home"
-						size={24}
-						color={activeTab === "Home" ? colors.primary : colors.background}
-					/>
-				</View>
-				{fontSizeCategory !== "larger" && (
-					<Text style={styles.tabNameText}>Home</Text>
-				)}
-			</TouchableOpacity>
-
-			<TouchableOpacity
-				onPress={() => switchTab("Rides")}
-				style={styles.drawerIcon}
-			>
-				<View
-					style={[
-						styles.iconContainer,
-						{
-							backgroundColor:
-								activeTab === "Rides" ? colors.background : colors.primary,
-						},
-					]}
-				>
-					<Feather
-						name="trending-up"
-						size={24}
-						color={activeTab === "Rides" ? colors.primary : colors.background}
-					/>
-				</View>
-				{fontSizeCategory !== "larger" && (
-					<Text style={styles.tabNameText}>Rides</Text>
-				)}
-			</TouchableOpacity>
-
-			<TouchableOpacity
-				onPress={() => switchTab("Account")}
-				style={styles.drawerIcon}
-			>
-				<View
-					style={[
-						styles.iconContainer,
-						{
-							backgroundColor:
-								activeTab === "Account" ? colors.background : colors.primary,
-						},
-					]}
-				>
-					<Ionicons
-						name="people"
-						size={24}
-						color={activeTab === "Account" ? colors.primary : colors.background}
-					/>
-				</View>
-				{fontSizeCategory !== "larger" && (
-					<Text style={styles.tabNameText}>Account</Text>
-				)}
-			</TouchableOpacity>
+			{tabItems.map(({ key, label, icon }) =>
+				renderTab(key as ActiveTabType, label, icon)
+			)}
 		</ThemedView>
 	);
 }
